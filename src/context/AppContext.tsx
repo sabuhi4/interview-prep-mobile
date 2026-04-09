@@ -1,7 +1,9 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { fetchQuestions, fetchQuizQuestions } from "../lib/api";
 import { getStoredJSON, setStoredJSON } from "../lib/storage";
-import { Question, QuizHistoryEntry, QuizQuestion } from "../types";
+import { categories, Question, QuizHistoryEntry, QuizQuestion } from "../types";
+
+const allowedCategories = new Set<string>(categories);
 
 const BOOKMARKS_KEY = "rn.bookmarkedQuestionIDs";
 const HISTORY_KEY = "rn.quizHistory";
@@ -52,7 +54,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         fetchQuizQuestions()
       ]);
 
-      setQuestions(fetchedQuestions);
+      setQuestions(fetchedQuestions.filter((q) => allowedCategories.has(q.category)));
       setQuizQuestions(fetchedQuiz);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unknown error");
