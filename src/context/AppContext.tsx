@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { Platform } from "react-native";
 import { fetchQuestions, fetchQuizQuestions } from "../lib/api";
 import { getStoredJSON, setStoredJSON } from "../lib/storage";
 import { categories, Question, QuizHistoryEntry, QuizQuestion } from "../types";
@@ -54,7 +55,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         fetchQuizQuestions()
       ]);
 
-      setQuestions(fetchedQuestions.filter((q) => allowedCategories.has(q.category)));
+      setQuestions(Platform.OS === "web" ? fetchedQuestions.filter((q) => allowedCategories.has(q.category)) : fetchedQuestions);
       setQuizQuestions(fetchedQuiz);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unknown error");
