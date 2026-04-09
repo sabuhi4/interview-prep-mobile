@@ -1,6 +1,6 @@
 import "react-native-gesture-handler";
 import React from "react";
-import { Platform, StatusBar } from "react-native";
+import { Platform, StatusBar, View, StyleSheet } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { NavigationContainer, DefaultTheme as NavigationDefaultTheme } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -120,7 +120,38 @@ function AppShell() {
   );
 }
 
+const styles = StyleSheet.create({
+  webWrapper: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#f0f0f0"
+  },
+  webContainer: {
+    width: 390,
+    height: 844,
+    overflow: "hidden",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.18,
+    shadowRadius: 24,
+    borderRadius: 40
+  }
+});
+
 export default function App() {
+  if (Platform.OS === "web") {
+    return (
+      <View style={styles.webWrapper}>
+        <View style={styles.webContainer}>
+          <AppProvider>
+            <AppShell />
+          </AppProvider>
+        </View>
+      </View>
+    );
+  }
+
   return (
     <AppProvider>
       <AppShell />
