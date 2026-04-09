@@ -122,14 +122,15 @@ function AppShell() {
 
 const styles = StyleSheet.create({
   webWrapper: {
-    minHeight: "100vh" as unknown as number,
+    width: "100%" as unknown as number,
+    height: "100vh" as unknown as number,
     alignItems: "center",
-    backgroundColor: "#f0f0f0",
-    paddingVertical: 8
+    justifyContent: "center",
+    backgroundColor: "#f0f0f0"
   },
   webContainer: {
-    flex: 1,
     width: 390,
+    height: "100%" as unknown as number,
     maxHeight: 844,
     overflow: "hidden",
     shadowColor: "#000",
