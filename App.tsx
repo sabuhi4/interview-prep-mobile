@@ -124,12 +124,13 @@ const styles = StyleSheet.create({
   webWrapper: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#f0f0f0"
+    backgroundColor: "#f0f0f0",
+    paddingVertical: 8
   },
   webContainer: {
+    flex: 1,
     width: 390,
-    height: 844,
+    maxHeight: 844,
     overflow: "hidden",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 8 },
