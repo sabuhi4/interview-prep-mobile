@@ -55,8 +55,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         fetchQuizQuestions()
       ]);
 
-      setQuestions(Platform.OS === "web" ? fetchedQuestions.filter((q) => allowedCategories.has(q.category)) : fetchedQuestions);
-      setQuizQuestions(fetchedQuiz);
+      const isWeb = Platform.OS === "web";
+      setQuestions(isWeb ? fetchedQuestions.filter((q) => allowedCategories.has(q.category)) : fetchedQuestions);
+      setQuizQuestions(isWeb ? fetchedQuiz.filter((q) => allowedCategories.has(q.category)) : fetchedQuiz);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unknown error");
     } finally {
