@@ -1,0 +1,25 @@
+{
+  "expo": {
+    "name": "PrepKit 2",
+    "slug": "interview-prep-rn",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.anonymous.interview-prep-rn"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#f4f6fb"
+      }
+    },
+    "plugins": [
+      "expo-asset",
+      "expo-font"
+    ]
+  }
+}
