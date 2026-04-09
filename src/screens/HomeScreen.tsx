@@ -103,18 +103,18 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingHorizontal: 16,
-    paddingTop: 14,
-    gap: 14,
-    paddingBottom: 24
+    paddingTop: 8,
+    gap: 10,
+    paddingBottom: 12
   },
   heroCard: {
     alignItems: "center",
-    paddingVertical: 20
+    paddingVertical: 12
   },
   heroIcon: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     alignItems: "center",
     justifyContent: "center"
   },
@@ -124,17 +124,17 @@ const styles = StyleSheet.create({
     fontWeight: "900"
   },
   title: {
-    marginTop: 8,
-    fontSize: 26,
-    lineHeight: 32,
+    marginTop: 6,
+    fontSize: 22,
+    lineHeight: 28,
     fontWeight: "800",
     color: theme.colors.text,
     textAlign: "center"
   },
   subtitle: {
-    marginTop: 10,
-    fontSize: 15,
-    lineHeight: 22,
+    marginTop: 4,
+    fontSize: 14,
+    lineHeight: 20,
     color: theme.colors.muted,
     textAlign: "center"
   },
@@ -174,15 +174,15 @@ const styles = StyleSheet.create({
   statCard: {
     width: "47%",
     alignItems: "center",
-    paddingVertical: 16
+    paddingVertical: 10
   },
   statValue: {
-    fontSize: 30,
+    fontSize: 24,
     fontWeight: "800",
     color: theme.colors.text
   },
   statLabel: {
-    marginTop: 6,
+    marginTop: 4,
     fontSize: 13,
     color: theme.colors.muted
   },
