@@ -4,8 +4,7 @@ export const categories = [
   "Next.js",
   "TypeScript",
   "CSS",
-  "HTML",
-  "Behavioral"
+  "HTML"
 ] as const;
 
 export const difficulties = ["easy", "medium", "hard"] as const;
