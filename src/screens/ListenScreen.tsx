@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Audio, InterruptionModeIOS } from "expo-av";
 import * as FileSystem from "expo-file-system";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -11,8 +11,17 @@ import { Question } from "../types";
 
 const speedOptions = [0.75, 1, 1.25, 1.5, 2];
 const ttsBaseURL = "https://web-interview-prep-app.vercel.app/api/tts";
+const isWeb = Platform.OS === "web";
 
 type PendingAction = "answer" | "advance" | null;
+
+function revokeAudioUri(uri: string) {
+  if (isWeb) {
+    URL.revokeObjectURL(uri);
+  } else {
+    FileSystem.deleteAsync(uri, { idempotent: true }).catch(() => {});
+  }
+}
 
 function arrayBufferToBase64(buffer: ArrayBuffer) {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
@@ -145,7 +154,7 @@ export function ListenScreen() {
 
   const cleanupLastFile = () => {
     if (lastFileUriRef.current) {
-      FileSystem.deleteAsync(lastFileUriRef.current, { idempotent: true }).catch(() => {});
+      revokeAudioUri(lastFileUriRef.current);
       lastFileUriRef.current = null;
     }
   };
@@ -154,7 +163,7 @@ export function ListenScreen() {
     prefetchAbortRef.current?.abort();
     prefetchAbortRef.current = null;
     if (prefetchCacheRef.current) {
-      FileSystem.deleteAsync(prefetchCacheRef.current.fileUri, { idempotent: true }).catch(() => {});
+      revokeAudioUri(prefetchCacheRef.current.fileUri);
       prefetchCacheRef.current = null;
     }
   };
@@ -241,12 +250,19 @@ export function ListenScreen() {
         if (!res.ok) throw new Error("tts-error");
         const buffer = await res.arrayBuffer();
         if (controller.signal.aborted || playbackId !== playbackIdRef.current) return;
-        const uri = `${FileSystem.cacheDirectory}tts-pre-${nextSegmentId}-${Date.now()}.mp3`;
-        await FileSystem.writeAsStringAsync(uri, arrayBufferToBase64(buffer), {
-          encoding: FileSystem.EncodingType.Base64,
-        });
+
+        let uri: string;
+        if (isWeb) {
+          uri = URL.createObjectURL(new Blob([buffer], { type: "audio/mpeg" }));
+        } else {
+          uri = `${FileSystem.cacheDirectory}tts-pre-${nextSegmentId}-${Date.now()}.mp3`;
+          await FileSystem.writeAsStringAsync(uri, arrayBufferToBase64(buffer), {
+            encoding: FileSystem.EncodingType.Base64,
+          });
+        }
+
         if (controller.signal.aborted || playbackId !== playbackIdRef.current) {
-          FileSystem.deleteAsync(uri, { idempotent: true }).catch(() => {});
+          revokeAudioUri(uri);
           return;
         }
         prefetchCacheRef.current = { segmentId: nextSegmentId, fileUri: uri };
@@ -304,10 +320,16 @@ export function ListenScreen() {
         }
 
         cleanupLastFile();
-        const uri = `${FileSystem.cacheDirectory}tts-${Date.now()}-${Math.random().toString(36).slice(2)}.mp3`;
-        await FileSystem.writeAsStringAsync(uri, arrayBufferToBase64(audioBuffer), {
-          encoding: FileSystem.EncodingType.Base64,
-        });
+
+        let uri: string;
+        if (isWeb) {
+          uri = URL.createObjectURL(new Blob([audioBuffer], { type: "audio/mpeg" }));
+        } else {
+          uri = `${FileSystem.cacheDirectory}tts-${Date.now()}-${Math.random().toString(36).slice(2)}.mp3`;
+          await FileSystem.writeAsStringAsync(uri, arrayBufferToBase64(audioBuffer), {
+            encoding: FileSystem.EncodingType.Base64,
+          });
+        }
         lastFileUriRef.current = uri;
 
         if (playbackId !== playbackIdRef.current || !isPlayingRef.current) {
@@ -426,11 +448,13 @@ export function ListenScreen() {
     pendingActionRef.current = null;
     clearPendingTimeout();
 
-    await Audio.setAudioModeAsync({
-      playsInSilentModeIOS: true,
-      interruptionModeIOS: InterruptionModeIOS.DoNotMix,
-      staysActiveInBackground: true,
-    });
+    if (!isWeb) {
+      await Audio.setAudioModeAsync({
+        playsInSilentModeIOS: true,
+        interruptionModeIOS: InterruptionModeIOS.DoNotMix,
+        staysActiveInBackground: true,
+      });
+    }
 
     isPlayingRef.current = true;
     setIsPlaying(true);
@@ -461,11 +485,13 @@ export function ListenScreen() {
       return;
     }
 
-    await Audio.setAudioModeAsync({
-      playsInSilentModeIOS: true,
-      interruptionModeIOS: InterruptionModeIOS.DoNotMix,
-      staysActiveInBackground: true,
-    });
+    if (!isWeb) {
+      await Audio.setAudioModeAsync({
+        playsInSilentModeIOS: true,
+        interruptionModeIOS: InterruptionModeIOS.DoNotMix,
+        staysActiveInBackground: true,
+      });
+    }
 
     isPlayingRef.current = true;
     setIsPlaying(true);
