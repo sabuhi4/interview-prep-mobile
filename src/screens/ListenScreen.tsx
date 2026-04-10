@@ -583,6 +583,19 @@ export function ListenScreen() {
 
   const progress = playlist.length > 0 ? ((currentIndex + 1) / playlist.length) * 100 : 0;
 
+  if (isWeb) {
+    return (
+      <SafeAreaView style={styles.screen} edges={["top"]}>
+        <View style={styles.webUnavailable}>
+          <Text style={styles.webUnavailableTitle}>Listen Mode</Text>
+          <Text style={styles.webUnavailableText}>
+            Audio playback is available in the mobile app.
+          </Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.screen} edges={["top"]}>
       <ScrollView contentContainerStyle={styles.content}>
@@ -972,5 +985,23 @@ const styles = StyleSheet.create({
   speedChipTextActive: {
     color: "#ffffff",
     fontWeight: "700",
+  },
+  webUnavailable: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 32,
+    gap: 12,
+  },
+  webUnavailableTitle: {
+    fontSize: 22,
+    fontWeight: "800",
+    color: theme.colors.text,
+  },
+  webUnavailableText: {
+    fontSize: 15,
+    color: theme.colors.muted,
+    textAlign: "center",
+    lineHeight: 22,
   },
 });
